@@ -45,7 +45,12 @@ func main() {
 
 func setupHandlers() *gin.Engine {
 	r := gin.Default()
+	r.Static("/static", "./static")
+
+	// Load templates
 	r.LoadHTMLGlob("templates/*.html")
+
+	// Configure routes
 	r.GET("/", homeController)
 	return r
 }

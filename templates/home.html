@@ -13,24 +13,23 @@
    href="http://kubernetes.io/img/global/apple_touch_icon_2X.jpg" />
   <!-- end apple device icons -->
   <link rel="stylesheet" href="static/css/main.css">
-  <title>Kubernetes Insights Dashboard</title>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-  <script>
-    if ( !window.jQuery ) {
-        document.write('<script src="static/jquery-2.1.1.min.js"><\/script>');
-    }
-  </script>
-  <script type="text/javascript" src="script.js"></script>
+  <link rel="stylesheet" href="static/css/dashboard.css">
+  <link rel="stylesheet" href="static/css/nv.d3.min.css">
+  <title>Cluster Insights Dashboard</title>
+  <script type=text/javascript src="static/js/jquery.min.js"></script>
+  <script type=text/javascript src="static/js/d3.min.js"></script>
+  <script type=text/javascript src="static/js/nv.d3.min.js"></script>
+  <script type=text/javascript src="static/js/dashboard.js"></script>
  </head>
  <body>
   <header id="nav" class="mobile-menu-slide">
  <div class="container">
   <div class="row hidden-sm hidden-xs">
    <div class="col-xs-12">
-    <a href="http://kubernetes.io/"><img src="http://kubernetes.io/img/desktop/nav_logo.svg" alt="Kubernetes by Google" id="logo-desktop" /></a>
+    <a href="/"><img src="http://kubernetes.io/img/desktop/nav_logo.svg" alt="Kubernetes by Google" id="logo-desktop" /></a>
     <nav>
 
-     <a href="http://kubernetes.io/" class="active" >
+     <a href="/" class="active" >
       <div>
        Home
       </div>
@@ -39,289 +38,56 @@
       </div>
      </a>
 
-     <a href="http://kubernetes.io/gettingstarted"  >
+     <a href="/other"  >
       <div>
-       Getting Started
+       Other page
       </div>
       <div class="underline">
        &nbsp;
       </div>
      </a>
 
-     <a href="http://kubernetes.io/community"  >
+     <a href="/other2"  >
       <div>
-       Community
+       Totally other page
       </div>
       <div class="underline">
        &nbsp;
       </div>
      </a>
 
-     <a href="http://kubernetes.io/events"  >
-      <div>
-       Events
-      </div>
-      <div class="underline">
-       &nbsp;
-      </div>
-     </a>
-
-     <a href="http://kubernetesio.blogspot.com/"  onclick="trackOutboundLink('http://kubernetesio.blogspot.com/'); return false;">
-      <div>
-       Blog
-      </div>
-      <div class="underline">
-       &nbsp;
-      </div>
-     </a>
-
-    </nav>
-    <a href="javascript:;" class="back-to-top"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 24 17" enable-background="new 0 0 24 17" xml:space="preserve"><g><path fill="#FFFFFF" d="M21.8,15.7c-3.2-3.9-6.5-7.9-9.7-11.8c-3.2,3.9-6.5,7.9-9.7,11.8c-1.1,1.3-2.9-0.6-1.9-1.9 c3.5-4.3,7.1-8.6,10.6-13c0.4-0.5,1.4-0.5,1.9,0c3.5,4.3,7.1,8.6,10.6,13C24.7,15.1,22.8,17,21.8,15.7z"/></g></svg></a>
+	</nav>
    </div>
   </div>
- </div>
- <div class="visible-sm-block visible-xs-block">
-    <a href="javascript:;" id="mobile-menu-button" class="mobile-menu-slide"><span></span></a>
-    <a href="javascript:;" class="back-to-top"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 24 17" enable-background="new 0 0 24 17" xml:space="preserve"><g><path fill="#FFFFFF" d="M21.8,15.7c-3.2-3.9-6.5-7.9-9.7-11.8c-3.2,3.9-6.5,7.9-9.7,11.8c-1.1,1.3-2.9-0.6-1.9-1.9 c3.5-4.3,7.1-8.6,10.6-13c0.4-0.5,1.4-0.5,1.9,0c3.5,4.3,7.1,8.6,10.6,13C24.7,15.1,22.8,17,21.8,15.7z"/></g></svg></a>
  </div>
 </header>
-<div id="mobile-nav-container" class="visible-sm-block visible-xs-block mobile-menu-slide">
 
-  <a href="http://kubernetes.io/" class="active" >
-  <div></div>
-  <span>Home</span>
- </a>
-
-  <a href="http://kubernetes.io/gettingstarted"  >
-  <div></div>
-  <span>Getting Started</span>
- </a>
-
-  <a href="http://kubernetes.io/community"  >
-  <div></div>
-  <span>Community</span>
- </a>
-
-  <a href="http://kubernetes.io/events"  >
-  <div></div>
-  <span>Events</span>
- </a>
-
-  <a href="http://kubernetesio.blogspot.com/"  onclick="trackOutboundLink('http://kubernetesio.blogspot.com/'); return false;">
-  <div></div>
-  <span>Blog</span>
- </a>
-
-</div>
-
-<div class="hero homepage">
- <div class="container">
-  <div class="row">
-   <div class="col-lg-6 col-md-6 col-sm-6 col-lg-offset-3 col-md-offset-3 col-sm-offset-3">
-    <div class="text-center">
-     <img src="http://kubernetes.io/img/desktop/hero_logo.svg" alt="Kubernetes by Google"
-      class="img-responsive hidden-sm hidden-xs" />
-     <img src="http://kubernetes.io/img/mobile/hero_logo.svg" alt="Kubernetes by Google"
-      class="img-responsive visible-sm-block visible-xs-block" />
-    </div>
-   </div>
-  </div>
-  <div class="row">
-   <div class="col-lg-6 col-md-6 col-sm-10 col-lg-offset-3 col-md-offset-3 col-sm-offset-1">
-    <h4 class="text-white">
-     Manage a cluster of Linux containers as a single system to accelerate Dev and simplify Ops.
-    </h4>
-   </div>
-  </div>
-  <div class="row">
-   <div class="col-lg-6 col-md-6 col-sm-8 col-lg-offset-3 col-md-offset-3 col-sm-offset-2">
-    <div class="row">
-     <div class="col-lg-6 col-md-6 col-sm-6">
-      <a href="https://github.com/googlecloudplatform/kubernetes" class="button alt" onclick="trackOutboundLink('https://github.com/googlecloudplatform/kubernetes'); return false;">View on GitHub</a>
-     </div>
-     <div class="col-lg-6 col-md-6 col-sm-6">
-      <a href="http://kubernetes.io/gettingstarted/" class="button alt" >Try Kubernetes</a>
-     </div>
-    </div>
+<div class="container">
+ <div class="row">
+  <div class="col-lg-10 col-md-10 col-sm-10 col-lg-offset-1 col-md-offset-1 col-sm-offset-1">
+   <div class="text-center">
+	   <p>content here</p>
+	   <div id="chart">
+		   <svg></svg>
+	   </div>
    </div>
   </div>
  </div>
 </div>
 
-
-
-
-
-<h1 class="offscreen">Kubernetes by Google</h1>
-<div class="what">
- <div class="container">
-  <div class="row">
-   <div class="col-lg-8 col-md-8 col-sm-8 col-lg-offset-2 col-md-offset-2 col-sm-offset-2">
-    <h2 class="text-blue underline">
-     Kubernetes is...
-    </h2>
-   </div>
-  </div> 
-  <div class="row">
-   <div class="col-lg-6 col-md-6 col-sm-6 col-lg-offset-3 col-md-offset-3 col-sm-offset-3">
-    <img src="/img/desktop/graphs/graph-01.svg" alt="Kubernetes is..." 
-     class="img-responsive hidden-xs" />
-    <img src="/img/mobile/graphs/graph-01.svg" alt="Kubernetes is..." 
-     class="img-responsive visible-xs-block" />
-   </div>
-  </div>
-  <div class="row">
-   <div class="col-lg-8 col-md-8 col-sm-10 col-lg-offset-2 col-md-offset-2 col-sm-offset-1">
-    <p class="split">Kubernetes is an open source orchestration system for Docker containers. It handles scheduling onto nodes in a compute cluster and actively manages workloads to ensure that their state matches the users declared intentions. Using the concepts of "labels" and "pods", it groups the containers which make up an application into logical units for easy management and discovery.</p>
-   </div>
-  </div> 
-  <div class="row">
-   <div class="col-lg-8 col-md-8 col-sm-8 col-lg-offset-2 col-md-offset-2 col-sm-offset-2">
-    <img src="/img/desktop/graphs/graph-02.svg" alt="Kubernetes workflow" 
-     class="img-responsive hidden-xs" />
-    <img src="/img/mobile/graphs/graph-02.svg" alt="Kubernetes is..."
-     class="img-responsive visible-xs-block" />
-   </div>
-  </div> 
- </div>
-</div>
-<div class="who">
- <div class="container">
-  <div class="row">
-   <div class="col-lg-5 col-md-5 col-sm-5 col-lg-offset-1 col-md-offset-1 col-sm-offset-1">
-    <div class="youtube-wrapper">
-     <iframe width="560" height="315" src="//www.youtube.com/embed/tsk0pWf4ipw?rel=0" frameborder="0" allowfullscreen></iframe>
-    </div>
-   </div>
-   <div class="col-lg-5 col-md-5 col-sm-5">
-    <h3 class="text-turquoise">
-     Created by Google
-    </h3>
-    <p class="text-turquoise">Drawing on over ten years of experience running containers at massive scale, but is owned and powered by a diverse set of contributors.</p>
-   </div>
-  </div>
- </div>
-</div>
-<div class="why">
- <div class="container">
-  <div class="row">
-   <div class="col-lg-8 col-md-8 col-sm-8 col-lg-offset-2 col-md-offset-2 col-sm-offset-2">
-    <h2 class="text-blue underline">
-     Why Kubernetes?
-    </h2>
-   </div>
-  </div>
-  <div class="row list">
- 
-   <div class="col-lg-4 col-md-4 col-sm-4 item">
-    <img src="/img/desktop/3_icons/feather.svg" alt="Lean" 
-     class="img-responsive hidden-xs" />
-    <img src="/img/mobile/3_icons/feather.svg" alt="Lean" 
-     class="img-responsive visible-xs-block" />
-    <h3 class="text-turquoise text-center">
-     Lean
-    </h3>
-    <p class="text-turquoise text-center">Lightweight, simple and accessible</p>
-   </div>
- 
-   <div class="col-lg-4 col-md-4 col-sm-4 item">
-    <img src="/img/desktop/3_icons/suitcase.svg" alt="Portable" 
-     class="img-responsive hidden-xs" />
-    <img src="/img/mobile/3_icons/suitcase.svg" alt="Portable" 
-     class="img-responsive visible-xs-block" />
-    <h3 class="text-turquoise text-center">
-     Portable
-    </h3>
-    <p class="text-turquoise text-center">Built for a multi-cloud world,<br /> public, private or hybrid</p>
-   </div>
- 
-   <div class="col-lg-4 col-md-4 col-sm-4 item">
-    <img src="/img/desktop/3_icons/blocks.svg" alt="Extensible" 
-     class="img-responsive hidden-xs" />
-    <img src="/img/mobile/3_icons/blocks.svg" alt="Extensible" 
-     class="img-responsive visible-xs-block" />
-    <h3 class="text-turquoise text-center">
-     Extensible
-    </h3>
-    <p class="text-turquoise text-center">Highly modular, designed so that all of its components are easily swappable</p>
-   </div>
- 
-  </div>
-  <div class="row">
-   <div class="col-lg-8 col-md-8 col-sm-8 col-lg-offset-2 col-md-offset-2 col-sm-offset-2">
-    <div class="underline hidden-xs">
-    </div>
-   </div>
-  </div>
- </div>
-</div>
-<div class="talk-tab">
- <div class="container">
-  <div class="row">
-   <div class="col-lg-4 col-md-4 col-sm-6 col-lg-offset-4 col-md-offset-4 col-sm-offset-3">
-    <h2 class="text-turquoise">
-     Talk to Us!
-    </h2>
-   </div>
-  </div>
- </div>
-</div>
-<div class="talk">
- <div class="container">
-  <div class="row">
-   <div class="col-lg-8 col-md-8 col-sm-10 col-lg-offset-2 col-md-offset-2 col-sm-offset-1">
-    <h4 class="text-turquoise">We would love to hear from you, how you are using Kubernetes, and what we can do to make it better.</h4>
-   </div>
-   <div class="col-lg-8 col-md-8 col-sm-10 col-lg-offset-2 col-md-offset-2 col-sm-offset-1">
-    <p class="split">Our IRC channel is the best way to contact our engineers and share your ideas with them. They hang out at <a href="http://webchat.freenode.net/?channels=google-containers" onclick="trackOutboundLink('http://webchat.freenode.net/?channels=google-containers'); return false;">#google-containers</a> on Freenode. Our user forum on <a href="http://stackoverflow.com/questions/tagged/kubernetes" onclick="trackOutboundLink('http://stackoverflow.com/questions/tagged/kubernetes'); return false;">stackoverflow</a> is a great place to go for community support.</p>
-   </div>
-  </div>
- </div>
-</div>
-
-
+<!--
 <footer class="text-center">
  <div class="container">
   <div class="row">
    <div class="col-xs-12">
     <h5>
-     Connect With Us!
+		footer stuff here
     </h5>
-   </div>
-  </div>
-  <div class="row">
-   <div class="col-xs-12">
-    <div class="social">
-
-     <a href="http://stackoverflow.com/questions/tagged/kubernetes" class="stackoverflow" onclick="trackOutboundLink('http://stackoverflow.com/questions/tagged/kubernetes'); return false;"><span>stackoverflow</span></a>
-
-     <a href="https://twitter.com/googlecloud" class="twitter" onclick="trackOutboundLink('https://twitter.com/googlecloud'); return false;"><span>twitter</span></a>
-
-     <a href="https://plus.google.com/+googlecloudplatform" class="googleplus" onclick="trackOutboundLink('https://plus.google.com/+googlecloudplatform'); return false;"><span>googleplus</span></a>
-
-    </div>
-   </div>
-  </div>
-  <div class="row">
-   <div class="col-xs-12">
-
-    <a href="http://webchat.freenode.net/?channels=google-containers" onclick="trackOutboundLink('http://webchat.freenode.net/?channels=google-containers'); return false;">Freenode</a>
-     | 
-
-    <a href="https://groups.google.com/forum/#!forum/google-containers" onclick="trackOutboundLink('https://groups.google.com/forum/#!forum/google-containers'); return false;">Mailing List</a>
-    
-
-   </div>
-  </div>
-  <div class="row">
-   <div class="col-xs-12">
-    <div class="copyright">
-     © Kubernetes 
-    </div>
    </div>
   </div>
  </div>
 </footer>
+-->
 
 <!-- end of content -->
 <!-- responsive test blocks -->
