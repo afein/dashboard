@@ -3,6 +3,118 @@
 	"GoVersion": "go1.4.2",
 	"Deps": [
 		{
+			"ImportPath": "bitbucket.org/ww/goautoneg",
+			"Comment": "null-5",
+			"Rev": "75cd24fc2f2c2a2088577d12123ddee5f54e0675"
+		},
+		{
+			"ImportPath": "code.google.com/p/go-uuid/uuid",
+			"Comment": "null-12",
+			"Rev": "7dda39b2e7d5e265014674c5af696ba4186679e9"
+		},
+		{
+			"ImportPath": "github.com/GoogleCloudPlatform/kubernetes/pkg/api",
+			"Comment": "v0.20.2-205-g9a5891d",
+			"Rev": "9a5891dc89c0526c4b72f56917a93b8739861264"
+		},
+		{
+			"ImportPath": "github.com/GoogleCloudPlatform/kubernetes/pkg/auth/user",
+			"Comment": "v0.20.2-205-g9a5891d",
+			"Rev": "9a5891dc89c0526c4b72f56917a93b8739861264"
+		},
+		{
+			"ImportPath": "github.com/GoogleCloudPlatform/kubernetes/pkg/client",
+			"Comment": "v0.20.2-205-g9a5891d",
+			"Rev": "9a5891dc89c0526c4b72f56917a93b8739861264"
+		},
+		{
+			"ImportPath": "github.com/GoogleCloudPlatform/kubernetes/pkg/conversion",
+			"Comment": "v0.20.2-205-g9a5891d",
+			"Rev": "9a5891dc89c0526c4b72f56917a93b8739861264"
+		},
+		{
+			"ImportPath": "github.com/GoogleCloudPlatform/kubernetes/pkg/fields",
+			"Comment": "v0.20.2-205-g9a5891d",
+			"Rev": "9a5891dc89c0526c4b72f56917a93b8739861264"
+		},
+		{
+			"ImportPath": "github.com/GoogleCloudPlatform/kubernetes/pkg/labels",
+			"Comment": "v0.20.2-205-g9a5891d",
+			"Rev": "9a5891dc89c0526c4b72f56917a93b8739861264"
+		},
+		{
+			"ImportPath": "github.com/GoogleCloudPlatform/kubernetes/pkg/probe",
+			"Comment": "v0.20.2-205-g9a5891d",
+			"Rev": "9a5891dc89c0526c4b72f56917a93b8739861264"
+		},
+		{
+			"ImportPath": "github.com/GoogleCloudPlatform/kubernetes/pkg/runtime",
+			"Comment": "v0.20.2-205-g9a5891d",
+			"Rev": "9a5891dc89c0526c4b72f56917a93b8739861264"
+		},
+		{
+			"ImportPath": "github.com/GoogleCloudPlatform/kubernetes/pkg/types",
+			"Comment": "v0.20.2-205-g9a5891d",
+			"Rev": "9a5891dc89c0526c4b72f56917a93b8739861264"
+		},
+		{
+			"ImportPath": "github.com/GoogleCloudPlatform/kubernetes/pkg/util",
+			"Comment": "v0.20.2-205-g9a5891d",
+			"Rev": "9a5891dc89c0526c4b72f56917a93b8739861264"
+		},
+		{
+			"ImportPath": "github.com/GoogleCloudPlatform/kubernetes/pkg/version",
+			"Comment": "v0.20.2-205-g9a5891d",
+			"Rev": "9a5891dc89c0526c4b72f56917a93b8739861264"
+		},
+		{
+			"ImportPath": "github.com/GoogleCloudPlatform/kubernetes/pkg/watch",
+			"Comment": "v0.20.2-205-g9a5891d",
+			"Rev": "9a5891dc89c0526c4b72f56917a93b8739861264"
+		},
+		{
+			"ImportPath": "github.com/GoogleCloudPlatform/kubernetes/third_party/forked/reflect",
+			"Comment": "v0.20.2-205-g9a5891d",
+			"Rev": "9a5891dc89c0526c4b72f56917a93b8739861264"
+		},
+		{
+			"ImportPath": "github.com/beorn7/perks/quantile",
+			"Rev": "b965b613227fddccbfffe13eae360ed3fa822f8d"
+		},
+		{
+			"ImportPath": "github.com/davecgh/go-spew/spew",
+			"Rev": "f9f629a1d082960e5d1747f33c2b378612615fea"
+		},
+		{
+			"ImportPath": "github.com/docker/docker/pkg/mount",
+			"Comment": "v1.4.1-3957-g7c64ed5",
+			"Rev": "7c64ed5c8c49d786d626f6a4704d868ae4662374"
+		},
+		{
+			"ImportPath": "github.com/docker/docker/pkg/units",
+			"Comment": "v1.4.1-3957-g7c64ed5",
+			"Rev": "7c64ed5c8c49d786d626f6a4704d868ae4662374"
+		},
+		{
+			"ImportPath": "github.com/docker/libcontainer/cgroups",
+			"Comment": "v2.1.0-20-gce1f2f1",
+			"Rev": "ce1f2f1c86cda9ce335c16f3638206ceb97174bd"
+		},
+		{
+			"ImportPath": "github.com/docker/libcontainer/configs",
+			"Comment": "v2.1.0-20-gce1f2f1",
+			"Rev": "ce1f2f1c86cda9ce335c16f3638206ceb97174bd"
+		},
+		{
+			"ImportPath": "github.com/docker/libcontainer/system",
+			"Comment": "v2.1.0-20-gce1f2f1",
+			"Rev": "ce1f2f1c86cda9ce335c16f3638206ceb97174bd"
+		},
+		{
+			"ImportPath": "github.com/ghodss/yaml",
+			"Rev": "c3eb24aeea63668ebdac08d2e252f20df8b6b1ae"
+		},
+		{
 			"ImportPath": "github.com/gin-gonic/gin",
 			"Comment": "v1.0rc1-104-g1a7ab6e",
 			"Rev": "1a7ab6e4d5fdc72d6df30ef562102ae6e0d18518"
@@ -10,6 +122,19 @@
 		{
 			"ImportPath": "github.com/golang/glog",
 			"Rev": "44145f04b68cf362d9c4df2182967c2275eaefed"
+		},
+		{
+			"ImportPath": "github.com/golang/protobuf/proto",
+			"Rev": "aece6fb931241ad332956db4f62798dfbea944b3"
+		},
+		{
+			"ImportPath": "github.com/google/cadvisor/info/v1",
+			"Comment": "0.14.0-27-gccd6fa6",
+			"Rev": "ccd6fa6a0d1cfaacaed4006aca43d98f59fd6184"
+		},
+		{
+			"ImportPath": "github.com/google/gofuzz",
+			"Rev": "bbcb9da2d746f8bdbd6a936686a0a6067ada0ec5"
 		},
 		{
 			"ImportPath": "github.com/manucorporat/sse",
@@ -20,6 +145,42 @@
 			"Rev": "d67e0b7d1797975196499f79bcc322c08b9f218b"
 		},
 		{
+			"ImportPath": "github.com/matttproud/golang_protobuf_extensions/pbutil",
+			"Rev": "fc2b8d3a73c4867e51861bbdd5ae3c1f0869dd6a"
+		},
+		{
+			"ImportPath": "github.com/prometheus/client_golang/model",
+			"Comment": "0.6.0-15-g00e4c46",
+			"Rev": "00e4c4629626a912cb8b44f8839a058768fc9c3f"
+		},
+		{
+			"ImportPath": "github.com/prometheus/client_golang/prometheus",
+			"Comment": "0.6.0-15-g00e4c46",
+			"Rev": "00e4c4629626a912cb8b44f8839a058768fc9c3f"
+		},
+		{
+			"ImportPath": "github.com/prometheus/client_golang/text",
+			"Comment": "0.6.0-15-g00e4c46",
+			"Rev": "00e4c4629626a912cb8b44f8839a058768fc9c3f"
+		},
+		{
+			"ImportPath": "github.com/prometheus/client_model/go",
+			"Comment": "model-0.0.2-12-gfa8ad6f",
+			"Rev": "fa8ad6fec33561be4280a8f0514318c79d7f6cb6"
+		},
+		{
+			"ImportPath": "github.com/prometheus/procfs",
+			"Rev": "c91d8eefde16bd047416409eb56353ea84a186e4"
+		},
+		{
+			"ImportPath": "github.com/spf13/pflag",
+			"Rev": "5644820622454e71517561946e3d94b9f9db6842"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/ssh",
+			"Rev": "c10c31b5e94b6f7a0283272dc2bb27163dcea24b"
+		},
+		{
 			"ImportPath": "golang.org/x/net/context",
 			"Rev": "dfe268fd2bb5c793f4c083803609fce9806c6f80"
 		},
@@ -27,6 +188,14 @@
 			"ImportPath": "gopkg.in/bluesuncorp/validator.v5",
 			"Comment": "v5.8",
 			"Rev": "c06d47f593d786142436a43334f724d819093c04"
+		},
+		{
+			"ImportPath": "gopkg.in/yaml.v2",
+			"Rev": "c1cd2254a6dd314c9d73c338c12688c9325d85c6"
+		},
+		{
+			"ImportPath": "speter.net/go/exp/math/dec/inf",
+			"Rev": "42ca6cd68aa922bc3f32f1e056e61b65945d9ad7"
 		}
 	]
 }

@@ -1,0 +1,51 @@
+{
+    "apiVersion": "v1beta3",
+    "kind": "ReplicationController",
+    "metadata": {
+	"labels": {
+	    "name": "dashboard"
+	},
+	"name": "monitoring-dashboard"
+    },
+    "spec": {
+	"replicas": 1,
+	"selector": {
+	    "name": "dashboard"
+	},
+	"template": {
+	    "metadata": {
+		"labels": {
+		    "name": "dashboard"
+		}
+	    },
+	    "spec": {
+		"containers": [
+		    {
+			"image": "afein/dashboard:latest",
+			"name": "dashboard",
+			"command": [
+			    "/dashboard"
+			],
+			"volumeMounts": [
+			    {
+				"name": "ssl-certs",
+				"mountPath": "/etc/ssl/certs",
+				"readOnly": true
+			    }			
+			]
+		    }
+		],
+		"volumes": [
+		    {
+			"name": "ssl-certs",
+			"source": {
+			    "hostDir": {
+				"path": "/etc/ssl/certs"
+			    }
+			}
+		    }
+		]
+	    }
+	}
+    }
+}
