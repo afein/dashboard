@@ -27,11 +27,54 @@ import (
 )
 
 var (
-	argPort            = flag.Int("port", 8289, "port to listen to")
-	argIp              = flag.String("listen_ip", "", "IP to listen on, defaults to all IPs")
-	argHeadless        = flag.Bool("headless", false, "True if the dashboard is running outside of a Kubernetes cluster")
-	argHeapsterService = flag.String("heapster_service", "monitoring-heapster", "Name of the Heapster service")
+	argPort              = flag.Int("port", 8289, "Port to listen to")
+	argIp                = flag.String("listen_ip", "", "IP to listen on, defaults to all IPs")
+	argHeadless          = flag.Bool("headless", false, "Headless mode should be enabled if the dashboard is running outside of a Kubernetes cluster")
+	argHeapsterURL       = flag.String("heapster_url", "", "URL of the Heapster API. Used only during headless mode")
+	argHeapsterService   = flag.String("heapster_service", "monitoring-heapster", "Name of the Heapster service")
+	argHeapsterNamespace = flag.String("heapster_namespace", "default", "Namespace where Heapster is operating")
 )
+
+// heapster_url is a package variable, initialized by main() and available to all request handlers
+var heapster_url string
+
+func getKubeHeapsterURL() string {
+	cl, err := client.NewInCluster()
+	if err != nil {
+		glog.Fatalf("unable to create Kubernetes API client: %s", err)
+	}
+
+	services := cl.Services(*argHeapsterNamespace)
+	heapster_service, err := services.Get(*argHeapsterService)
+	if err != nil {
+		glog.Fatalf("unable to locate Heapster service: %s", *argHeapsterService)
+	}
+
+	heap_ip := heapster_service.Spec.ClusterIP
+	if strings.Count(heap_ip, ".") != 4 {
+		glog.Fatalf("invalid cluster IP address for the Heapster Service: %s", heap_ip)
+	}
+	if len(heapster_service.Spec.Ports) == 0 {
+		glog.Fatalf("no heapster Ports registered")
+	}
+
+	heap_port := heapster_service.Spec.Ports[0].Port
+	if heap_port == 0 {
+		glog.Fatalf("heapster port is 0")
+	}
+
+	heapster_root := fmt.Sprintf("http://%s:%d", heap_ip, heap_port)
+	resp, err := http.Get(heapster_root)
+	if err != nil {
+		glog.Fatalf("unable to GET %s", heapster_root)
+	}
+
+	if resp.StatusCode != 200 {
+		glog.Fatalf("GET %s responded with status code: %d", heapster_root, resp.StatusCode)
+	}
+
+	return heapster_root
+}
 
 func main() {
 	defer glog.Flush()
@@ -41,35 +84,9 @@ func main() {
 	glog.Infof("Starting dashboard on port %d", *argPort)
 
 	if !*argHeadless {
-		cl, err := client.NewInCluster()
-		if err != nil {
-			glog.Errorf("Unable to create internal Kube client")
-		}
-		services := cl.Services("default")
-		heapster_service, err := services.Get(*argHeapsterService)
-		if err != nil {
-			glog.Errorf("Unable to locate Heapster service: %s", *argHeapsterService)
-		}
-		glog.Infof("heapster service: %s", heapster_service)
-		heap_ip := heapster_service.Spec.ClusterIP
-		glog.Infof("heapster ip: %s", heap_ip)
-		if len(heapster_service.Spec.Ports) == 0 {
-			glog.Errorf("No Heapster Ports registered")
-		}
-		heap_port := heapster_service.Spec.Ports[0].Port
-		glog.Infof("heapster nodeport: %d", heap_port)
-
-		resp, err := http.Get(fmt.Sprintf("http://%s:%d", heap_ip, heap_port))
-		if err != nil {
-			glog.Errorf("Unable to GET root")
-		}
-		glog.Infof("root heapster: %s", resp)
-
-		resp, err = http.Get(fmt.Sprintf("http://%s:%d/api/v1/metric-export", heap_ip, heap_port))
-		if err != nil {
-			glog.Errorf("Unable to GET root")
-		}
-		glog.Infof("metric-export: %s", resp)
+		heapster_url = getKubeHeapsterURL()
+	} else {
+		heapster_url = *argHeapsterURL
 	}
 
 	r := setupHandlers()
@@ -87,7 +104,6 @@ func setupHandlers() *gin.Engine {
 	r.LoadHTMLGlob("templates/*.html")
 
 	// Configure routes
-	r.GET("/", homeController)
 	r.GET("/", homeController)
 	return r
 }
