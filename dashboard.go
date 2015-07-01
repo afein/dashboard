@@ -15,8 +15,10 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"strings"
@@ -31,7 +33,7 @@ var (
 	argIp                = flag.String("listen_ip", "", "IP to listen on, defaults to all IPs")
 	argHeadless          = flag.Bool("headless", false, "Headless mode should be enabled if the dashboard is running outside of a Kubernetes cluster")
 	argHeapsterURL       = flag.String("heapster_url", "", "URL of the Heapster API. Used only during headless mode")
-	argHeapsterService   = flag.String("heapster_service", "monitoring-heapster", "Name of the Heapster service")
+	argHeapsterService   = flag.String("heapster_service", "monitoring-heapster2", "Name of the Heapster service")
 	argHeapsterNamespace = flag.String("heapster_namespace", "default", "Namespace where Heapster is operating")
 )
 
@@ -51,7 +53,7 @@ func getKubeHeapsterURL() string {
 	}
 
 	heap_ip := heapster_service.Spec.ClusterIP
-	if strings.Count(heap_ip, ".") != 4 {
+	if strings.Count(heap_ip, ".") != 3 {
 		glog.Fatalf("invalid cluster IP address for the Heapster Service: %s", heap_ip)
 	}
 	if len(heapster_service.Spec.Ports) == 0 {
@@ -68,12 +70,32 @@ func getKubeHeapsterURL() string {
 	if err != nil {
 		glog.Fatalf("unable to GET %s", heapster_root)
 	}
-
 	if resp.StatusCode != 200 {
 		glog.Fatalf("GET %s responded with status code: %d", heapster_root, resp.StatusCode)
 	}
 
 	return heapster_root
+}
+
+func getHeapsterAvailableMetrics() []string {
+	var metrics []string
+	metric_url := heapster_url + "/api/v1/schema/metrics"
+	resp, err := http.Get(metric_url)
+	if err != nil {
+		glog.Fatalf("unable to GET %s", metric_url)
+	}
+	if resp.StatusCode != 200 {
+		glog.Fatalf("GET %s responded with status code: %d", metric_url, resp.StatusCode)
+	}
+
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		glog.Fatalf("unable to read response body from %s", metric_url)
+	}
+	json.Unmarshal(body, &metrics)
+	glog.Infof("%s", metrics)
+	return metrics
 }
 
 func main() {
@@ -105,5 +127,41 @@ func setupHandlers() *gin.Engine {
 
 	// Configure routes
 	r.GET("/", homeController)
+	r.GET("/api/*uri", apiController)
+	r.GET("/metrics/", metricsController)
 	return r
+}
+
+func metricsController(c *gin.Context) {
+	c.JSON(200, gin.H{"metrics": getHeapsterAvailableMetrics()})
+}
+
+func homeController(c *gin.Context) {
+	vars := gin.H{}
+	c.HTML(200, "home.html", vars)
+}
+
+func apiController(c *gin.Context) {
+	uri := c.Request.RequestURI
+	metric_url := heapster_url + uri
+	resp, err := http.Get(metric_url)
+	if err != nil {
+		glog.Fatalf("unable to GET %s", metric_url)
+	}
+	if resp.StatusCode != 200 {
+		glog.Errorf("GET %s responded with status code: %d", metric_url, resp.StatusCode)
+		return
+	}
+
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		glog.Errorf("unable to read response body from %s", metric_url)
+		return
+	}
+
+	_, err = c.Writer.Write(body)
+	if err != nil {
+		glog.Errorf("unable to write body to response for %s", uri)
+	}
 }
