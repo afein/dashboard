@@ -15,16 +15,13 @@
 package main
 
 import (
-	"encoding/json"
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"strings"
 
 	"github.com/GoogleCloudPlatform/kubernetes/pkg/client"
-	"github.com/gin-gonic/gin"
 	"github.com/golang/glog"
 )
 
@@ -37,9 +34,7 @@ var (
 	argHeapsterNamespace = flag.String("heapster_namespace", "default", "Namespace where Heapster is operating")
 )
 
-// heapster_url is a package variable, initialized by main() and available to all request handlers
-var heapster_url string
-
+// getKubeHeapster URL uses the Kubernetes API client to retrieve Heapster's Portal IP and Port.
 func getKubeHeapsterURL() string {
 	cl, err := client.NewInCluster()
 	if err != nil {
@@ -77,27 +72,6 @@ func getKubeHeapsterURL() string {
 	return heapster_root
 }
 
-func getHeapsterAvailableMetrics() []string {
-	var metrics []string
-	metric_url := heapster_url + "/api/v1/schema/metrics"
-	resp, err := http.Get(metric_url)
-	if err != nil {
-		glog.Fatalf("unable to GET %s", metric_url)
-	}
-	if resp.StatusCode != 200 {
-		glog.Fatalf("GET %s responded with status code: %d", metric_url, resp.StatusCode)
-	}
-
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		glog.Fatalf("unable to read response body from %s", metric_url)
-	}
-	json.Unmarshal(body, &metrics)
-	glog.Infof("%s", metrics)
-	return metrics
-}
-
 func main() {
 	defer glog.Flush()
 	flag.Parse()
@@ -111,57 +85,9 @@ func main() {
 		heapster_url = *argHeapsterURL
 	}
 
-	r := setupHandlers()
+	r := setupHandlers(heapster_url)
 
 	addr := fmt.Sprintf("%s:%d", *argIp, *argPort)
 	r.Run(addr)
 	os.Exit(0)
-}
-
-func setupHandlers() *gin.Engine {
-	r := gin.Default()
-	r.Static("/static", "./static")
-
-	// Load templates
-	r.LoadHTMLGlob("templates/*.html")
-
-	// Configure routes
-	r.GET("/", homeController)
-	r.GET("/api/*uri", apiController)
-	r.GET("/metrics/", metricsController)
-	return r
-}
-
-func metricsController(c *gin.Context) {
-	c.JSON(200, gin.H{"metrics": getHeapsterAvailableMetrics()})
-}
-
-func homeController(c *gin.Context) {
-	vars := gin.H{}
-	c.HTML(200, "home.html", vars)
-}
-
-func apiController(c *gin.Context) {
-	uri := c.Request.RequestURI
-	metric_url := heapster_url + uri
-	resp, err := http.Get(metric_url)
-	if err != nil {
-		glog.Fatalf("unable to GET %s", metric_url)
-	}
-	if resp.StatusCode != 200 {
-		glog.Errorf("GET %s responded with status code: %d", metric_url, resp.StatusCode)
-		return
-	}
-
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		glog.Errorf("unable to read response body from %s", metric_url)
-		return
-	}
-
-	_, err = c.Writer.Write(body)
-	if err != nil {
-		glog.Errorf("unable to write body to response for %s", uri)
-	}
 }
