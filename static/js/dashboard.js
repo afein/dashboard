@@ -12,38 +12,69 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-var usage = [{key: 'Cluster Memory Usage', values:[]}];
+'use strict';
 
-d3.json(window.location + '/api/v1/schema/cluster/memory-usage', function(error,data){
-  console.log(data);
-  for(var i in data.metrics){
-      usage[0]["values"].push({x: Date.parse(data.metrics[i].timestamp), y: data.metrics[i].value/1048576});
-  }
-  console.log(usage);
-  nv.addGraph(function() {
-    var chart = nv.models.lineWithFocusChart();
-    chart.xAxis
-        .axisLabel('Time')
-        .tickFormat(function(d) {return d3.time.format('%X')(new Date(d));});
+(function(){
+var app = angular.module('dashboard', ['nvd3']);
+  app.controller('cluster', function($scope, $http, $interval) {
+    $scope.options = {
+      chart: {
+        type: 'lineWithFocusChart',
+        height: 450,
+        margin : {
+          top: 20,
+          right: 20,
+          bottom: 60,
+          left: 40
+        },
+        transitionDuration: 500,
+        xAxis: {
+          axisLabel: 'Time',
+          tickFormat: function(d) {
+            return d3.time.format('%X')(new Date(d));
+          }
+        },
+        x2Axis: {
+        },
+        yAxis: {
+          axisLabel: 'MB',
+          tickFormat: function(d) {
+            return d3.format(',d')(d);
+          },
+          rotateYLabel: false
+        },
+        y2Axis: {
+        }
 
-    chart.x2Axis
-        .axisLabel('Time')
-        .tickFormat(function(d) {return d3.time.format('%X')(new Date(d));});
+      }
+    };
 
-    chart.yAxis
-        .axisLabel('MBytes')
-        .tickFormat(d3.format('d'));
+    
+    $scope.stamp = (new Date(0)).toISOString();
+    $scope.data = [{key: 'Cluster Memory Usage', area: true, values:[]}];
+    $scope.run = true;
 
-    chart.y2Axis
-        .tickFormat(d3.format('d'));
+    $scope.poll = function(){
+      if (!$scope.run) return;
+      var usage = $scope.data;
+      console.log($scope.stamp);
+      $http.get(window.location + 'api/v1/model/cluster/memory-usage?start=' + $scope.stamp)
+        .success(function(data) {
+          console.log(data);
+          if ((data.metrics == undefined) || (data.metrics.length == 0)) {
+            // No metrics are available, postpone
+            return;
+          }
+          for(var i in data.metrics){
+            usage[0]["values"].push({x: Date.parse(data.metrics[i].timestamp), y: data.metrics[i].value/1048576});
+          }
+          $scope.data = usage;
+          $scope.stamp = data.latestTimestamp;
+      });
+      console.log("called");
+    };
 
-    d3.select('#chart svg')
-        .datum(usage)
-        .transition().duration(500)
-        .call(chart)
-        ;
-    nv.utils.windowResize(chart.update);
+    $interval($scope.poll, 5000);
 
-    return chart;
   });
-});
+})();

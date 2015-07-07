@@ -1,100 +1,75 @@
 <!DOCTYPE html>
 <html>
- <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport"
-   content="width=device-width, initial-scale=1, user-scalable=no" />
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport"
+    content="width=device-width, initial-scale=1, user-scalable=no" />
 
-  <link rel="shortcut icon"
-   href="http://kubernetes.io/img/global/favicon.png" type="image/vnd.microsoft.icon" />
-  <!-- apple device icons -->
-  <link rel="apple-touch-icon"
-   href="http://kubernetes.io/img/global/apple_touch_icon_2X.jpg" />
-  <!-- end apple device icons -->
-  <link rel="stylesheet" href="static/css/main.css">
-  <link rel="stylesheet" href="static/css/dashboard.css">
-  <link rel="stylesheet" href="static/css/nv.d3.min.css">
-  <title>Cluster Insights Dashboard</title>
-  <script type=text/javascript src="static/js/jquery.min.js"></script>
-  <script type=text/javascript src="static/js/d3.min.js"></script>
-  <script type=text/javascript src="static/js/nv.d3.min.js"></script>
-  <script type=text/javascript src="static/js/dashboard.js"></script>
- </head>
- <body>
-  <header id="nav" class="mobile-menu-slide">
- <div class="container">
-  <div class="row hidden-sm hidden-xs">
-   <div class="col-xs-12">
-    <a href="/"><img src="http://kubernetes.io/img/desktop/nav_logo.svg" alt="Kubernetes by Google" id="logo-desktop" /></a>
-    <nav>
+    <link rel="stylesheet" href="static/css/main.css">
+    <link rel="stylesheet" href="static/css/dashboard.css">
+    <link rel="stylesheet" href="static/css/nv.d3.min.css">
+    <title>Cluster Insights Dashboard</title>
+    <script type=text/javascript src="static/js/angular.min.js"></script>
+    <script type=text/javascript src="static/js/angular-route.min.js"></script>
+    <script type=text/javascript src="static/js/d3.min.js"></script>
+    <script type=text/javascript src="static/js/nv.d3.min.js"></script>
+    <script type=text/javascript src="static/js/angular-nvd3.js"></script>
+    <script type=text/javascript src="static/js/dashboard.js"></script>
+  </head>
+  <body>
+    <header id="nav" class="mobile-menu-slide">
+      <div class="container">
+        <div class="row hidden-sm hidden-xs">
+          <div class="col-xs-12">
+            <a href="/"><img src="http://kubernetes.io/img/desktop/nav_logo.svg" alt="Kubernetes by Google" id="logo-desktop" /></a>
+            <nav>
+              <a href="#cluster" class="active" >
+                <div>
+                  Cluster
+                </div>
+                <div class="underline">
+                  &nbsp;
+                </div>
+              </a>
 
-     <a href="/" class="active" >
-      <div>
-       Home
+              <a href="#nodes">
+                <div>
+                  Nodes
+                </div>
+                <div class="underline">
+                  &nbsp;
+                </div>
+              </a>
+
+              <a href="#pods">
+                <div>
+                  Pods
+                </div>
+                <div class="underline">
+                  &nbsp;
+                </div>
+              </a>
+            </nav>
+          </div>
+        </div>
       </div>
-      <div class="underline">
-       &nbsp;
+    </header>
+
+    <div ng-app="dashboard">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-10 col-md-10 col-sm-10 col-lg-offset-1 col-md-offset-1 col-sm-offset-1">
+            <div class="text-center">
+              <p>Cluster Insights</p>
+            </div>
+            <div ng-controller="cluster">
+              <nvd3 options="options" data="data"></nvd3>
+            </div>
+          </div>
+        </div>
       </div>
-     </a>
+    </div>
 
-     <a href="/other"  >
-      <div>
-       Other page
-      </div>
-      <div class="underline">
-       &nbsp;
-      </div>
-     </a>
-
-     <a href="/other2"  >
-      <div>
-       Totally other page
-      </div>
-      <div class="underline">
-       &nbsp;
-      </div>
-     </a>
-
-	</nav>
-   </div>
-  </div>
- </div>
-</header>
-
-<div class="container">
- <div class="row">
-  <div class="col-lg-10 col-md-10 col-sm-10 col-lg-offset-1 col-md-offset-1 col-sm-offset-1">
-   <div class="text-center">
-	   <p>content here</p>
-	   <div id="chart">
-		   <svg></svg>
-	   </div>
-   </div>
-  </div>
- </div>
-</div>
-
-<!--
-<footer class="text-center">
- <div class="container">
-  <div class="row">
-   <div class="col-xs-12">
-    <h5>
-		footer stuff here
-    </h5>
-   </div>
-  </div>
- </div>
-</footer>
--->
-
-<!-- end of content -->
-<!-- responsive test blocks -->
-<div class="visible-xs-block"></div>
-<div class="visible-sm-block"></div>
-<div class="visible-md-block"></div>
-<div class="visible-lg-block"></div>
-<!-- end of responsive test blocks -->
- </body>
+  </body>
 </html>
