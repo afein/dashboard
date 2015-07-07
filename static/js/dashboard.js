@@ -35,15 +35,20 @@ var app = angular.module('dashboard', ['nvd3']);
           }
         },
         x2Axis: {
+          tickFormat: function(d) {
+            return d3.time.format('%X')(new Date(d));
+          }
         },
         yAxis: {
           axisLabel: 'MB',
           tickFormat: function(d) {
             return d3.format(',d')(d);
-          },
-          rotateYLabel: false
+          }
         },
         y2Axis: {
+          tickFormat: function(d) {
+            return d3.format(',d')(d);
+          }
         }
 
       }
@@ -57,7 +62,6 @@ var app = angular.module('dashboard', ['nvd3']);
     $scope.poll = function(){
       if (!$scope.run) return;
       var usage = $scope.data;
-      console.log($scope.stamp);
       $http.get(window.location + 'api/v1/model/cluster/memory-usage?start=' + $scope.stamp)
         .success(function(data) {
           console.log(data);
@@ -74,7 +78,13 @@ var app = angular.module('dashboard', ['nvd3']);
       console.log("called");
     };
 
+    // Poll for new data every 5 seconds
     $interval($scope.poll, 5000);
+
+    // Trigger the first poll as soon as content is loaded
+    $scope.$watch('$viewContentLoaded', function(){
+      $scope.poll()
+    });
 
   });
 })();
