@@ -61,7 +61,6 @@ var app = angular.module('dashboard', ['nvd3']);
 
     $scope.poll = function(){
       if (!$scope.run) return;
-      var usage = $scope.data;
       $http.get(window.location + 'api/v1/model/cluster/memory-usage?start=' + $scope.stamp)
         .success(function(data) {
           console.log(data);
@@ -70,21 +69,17 @@ var app = angular.module('dashboard', ['nvd3']);
             return;
           }
           for(var i in data.metrics){
-            usage[0]["values"].push({x: Date.parse(data.metrics[i].timestamp), y: data.metrics[i].value/1048576});
+            $scope.data[0]["values"].push({x: Date.parse(data.metrics[i].timestamp), y: data.metrics[i].value/1048576});
           }
-          $scope.data = usage;
           $scope.stamp = data.latestTimestamp;
       });
-      console.log("called");
     };
 
     // Poll for new data every 5 seconds
     $interval($scope.poll, 5000);
 
     // Trigger the first poll as soon as content is loaded
-    $scope.$watch('$viewContentLoaded', function(){
-      $scope.poll()
-    });
+    $scope.$watch('$viewContentLoaded', $scope.poll);
 
   });
 })();
