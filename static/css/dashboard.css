@@ -1,3 +1,8 @@
 #clusterChart svg {
-  height: 400px;
+  height: 500px;
 }
+
+body {
+  padding-top: 90px !important;
+}
+
