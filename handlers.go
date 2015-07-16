@@ -30,9 +30,10 @@ func setupHandlers(url string) *gin.Engine {
 	heapster_url = url
 	r := gin.Default()
 	r.Static("/static", "./static")
+	r.Static("/pages", "./pages")
 
-	// Load templates
-	r.LoadHTMLGlob("templates/*.html")
+	// Load the base template
+	r.LoadHTMLGlob("pages/index.html")
 
 	// Configure routes
 	r.GET("/", homeHandler)
@@ -43,7 +44,7 @@ func setupHandlers(url string) *gin.Engine {
 // homeHandler renders the home html template.
 func homeHandler(c *gin.Context) {
 	vars := gin.H{}
-	c.HTML(200, "home.html", vars)
+	c.HTML(200, "index.html", vars)
 }
 
 // apiHandler proxies all requests on /api/* to the Heapster API, using the same request URI.
