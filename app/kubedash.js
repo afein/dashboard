@@ -80,10 +80,10 @@
         $scope.data.push({key: 'CPU Utilization', area: true, values:[]});
         $scope.run = true;
 
-        var memUsage = 'api/v1/model/cluster/metrics/memory-usage?start=';
-        var memLimit = 'api/v1/model/cluster/metrics/memory-limit?start=';
-        var cpuUsage = 'api/v1/model/cluster/metrics/cpu-usage?start=';
-        var cpuLimit = 'api/v1/model/cluster/metrics/cpu-limit?start=';
+        var memUsage = 'api/v1/model/metrics/memory-usage?start=';
+        var memLimit = 'api/v1/model/metrics/memory-limit?start=';
+        var cpuUsage = 'api/v1/model/metrics/cpu-usage?start=';
+        var cpuLimit = 'api/v1/model/metrics/cpu-limit?start=';
 
         // scope.poll appends memory and cpu utilization to the chart
         $scope.poll = function() {
