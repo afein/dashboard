@@ -34,6 +34,16 @@
           templateUrl : 'pages/node.html',
           controller : 'nodeUtil',
         })
+        // route for the Namespaces page
+        .when('/namespaces/', {
+          templateUrl : 'pages/namespaces.html',
+          controller : 'allNamespaces',
+        })
+        // route for each individual Namespace Page
+        .when('/namespace/:name', {
+          templateUrl : 'pages/namespace.html',
+          controller : 'namespaceUtil',
+        })
         .otherwise({
           redirectTo: '/'
         });
@@ -113,8 +123,8 @@
   });
 
   app.controller('allNodes', ['$scope', '$http', function($scope, $http) {
-    $scope.items = []
-        var allNodes = "api/v1/model/nodes/";
+    $scope.items = [];
+    var allNodes = "api/v1/model/nodes/";
     $http.get(allNodes).success(function(data) {
       if (data.length == 0) {
         // No Nodes are available, postpone
@@ -124,7 +134,6 @@
       console.log(data);
     });
   }]);
-
   app.controller('nodeUtil', 
       function($scope, $http, $interval, $q, $routeParams) {
         $scope.hostname = $routeParams.name;
@@ -180,6 +189,94 @@
         var memLimit = 'api/v1/model/nodes/' + $scope.hostname + '/metrics/memory-limit?start=';
         var cpuUsage = 'api/v1/model/nodes/' + $scope.hostname + '/metrics/cpu-usage?start=';
         var cpuLimit = 'api/v1/model/nodes/' + $scope.hostname + '/metrics/cpu-limit?start=';
+
+        // scope.poll appends memory and cpu utilization to the chart
+        $scope.poll = function() {
+          pollUtilization(memUsage, memLimit, $scope, 0, $http, $q);
+          pollUtilization(cpuUsage, cpuLimit, $scope, 1, $http, $q);
+        };
+
+        // Poll for new data every 5 seconds
+        $scope.pollPromise = $interval($scope.poll, 10000);
+
+        // Trigger the first poll as soon as content is loaded
+        $scope.$watch('$viewContentLoaded', $scope.poll);
+
+        $scope.$on('$destroy', function () {
+          $interval.cancel($scope.pollPromise);
+        });
+
+      });
+
+
+  app.controller('allNamespaces', function($scope, $http) {
+    $scope.items = [];
+    var allNamespaces = "api/v1/model/namespaces/";
+    $http.get(allNamespaces).success(function(data) {
+      if (data.length == 0) {
+        // No Nodes are available, postpone
+        return;
+      }
+      $scope.items = data;
+      console.log(data);
+    });
+  });
+
+  app.controller('namespaceUtil', 
+      function($scope, $http, $interval, $q, $routeParams) {
+        $scope.namespace = $routeParams.name;
+        $scope.options = {
+          chart: {
+            type: 'lineWithFocusChart',
+            height: 400,
+            margin : {
+              top: 20,
+              right: 20,
+              bottom: 60,
+              left: 40
+            },
+            transitionDuration: 500,
+            useInteractiveGuideline: true,
+            lines: {
+              forceY: [0, 1],
+            },
+            color: ['#31708f', '#a94442'],  // light blue, light red
+            xAxis: {
+              axisLabel: 'Time',
+              tickFormat: function(d) {
+                return d3.time.format('%X')(new Date(d));
+              },
+              staggerLabels:true
+            },
+            x2Axis: {
+              tickFormat: function(d) {
+                return d3.time.format('%X')(new Date(d));
+              }
+            },
+            yAxis: {
+              axisLabel: 'Utilization',
+              tickFormat: function(d) {
+                return d3.format('%')(d3.round(d, 3));
+              }
+            },
+            y2Axis: {
+              tickFormat: function(d) {
+                return d3.format('%')(d3.round(d, 3));
+              }
+            }
+
+          }
+        };
+
+        $scope.stamp = (new Date(0)).toISOString();
+        $scope.data = [{key: 'Memory Utilization', area: true, values:[]}];
+        $scope.data.push({key: 'CPU Utilization', area: true, values:[]});
+        $scope.run = true;
+
+        var memUsage = 'api/v1/model/namespaces/' + $scope.namespace + '/metrics/memory-usage?start=';
+        var memLimit = 'api/v1/model/namespaces/' + $scope.namespace + '/metrics/memory-limit?start=';
+        var cpuUsage = 'api/v1/model/namespaces/' + $scope.namespace + '/metrics/cpu-usage?start=';
+        var cpuLimit = 'api/v1/model/namespaces/' + $scope.namespace + '/metrics/cpu-limit?start=';
 
         // scope.poll appends memory and cpu utilization to the chart
         $scope.poll = function() {
