@@ -30,11 +30,8 @@ angular.module('kubedash').controller('nodeUtil', function($scope, $controller, 
   $scope.cpuLimit = 'api/v1/model/nodes/' + $scope.hostname + '/metrics/cpu-limit?start=';
   $controller('UtilizationViewController', {$scope: $scope});
 });
-
 angular.module('kubedash').controller('namespaceUtil',  function($scope, $controller, $routeParams) {
-
   $scope.ns = $routeParams.name;
-
   $scope.memUsage = 'api/v1/model/namespaces/' + $scope.ns + '/metrics/memory-usage?start=';
   $scope.memLimit = 'api/v1/model/namespaces/' + $scope.ns + '/metrics/memory-limit?start=';
   $scope.memLimitFallback = 'api/v1/model/metrics/memory-limit?start=';

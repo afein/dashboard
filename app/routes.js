@@ -47,7 +47,20 @@ angular.module('kubedash').config(['$locationProvider', '$routeProvider',
       });
 }]);
 
+
 angular.module('kubedash').run(function($rootScope) {
+  $rootScope.$on('$routeChangeStart', function(event, next, current) {
+    // Performs cleanup of all nvd3 charts during routing changes.
+    if (typeof(current) !== 'undefined'){
+      d3.selectAll('svg').remove();
+      nv.charts = {};
+      nv.graphs = [];
+      nv.logs = {};
+      // Remove Window Resize Listeners.
+      window.onresize = null;
+    }
+  });
+
   $rootScope.alerts = []
 
   $rootScope.addAlert = function (message) {

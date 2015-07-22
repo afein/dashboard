@@ -70,6 +70,12 @@ angular.module('kubedash').controller('ChartViewController',
 
       $scope.$on('$destroy', function () {
         $interval.cancel($scope.pollPromise);
+
+        // Destroy all d3 entites
+        d3.select('#utilchart').remove();
+        $scope.options = null;
+        $scope.data = [];
+        $scope.chart = null;
       });
 
     });
@@ -85,53 +91,70 @@ angular.module('kubedash').controller('UtilizationViewController',
 
       var memLimit = $scope.memLimit;
       var cpuLimit = $scope.cpuLimit;
-      testLimitToUsageRatio($scope.memUsage, $scope.memLimit, $http, $q, function() {
-        if (!!$scope.memLimitFallback) {
-          memLimit = $scope.memLimitFallback;
-          $rootScope.addAlert("memory limit");
-        }
+
+      var define_poll = function () {
+        $scope.poll = function() {
+          pollUtilization($scope.memUsage, memLimit, $scope, 0, $http, $q);
+          pollUtilization($scope.cpuUsage, cpuLimit, $scope, 1, $http, $q);
+        };
+      }
+
+      if ((!$scope.memLimitFallback) && (!$scope.cpuLimitFallback)) {
+        console.log("no fallbacks, defaulting");
+        define_poll();
+        $controller('ChartViewController', {$scope: $scope});
+        return
+      } 
+      console.log("fallbacks, checking");
+      testLimitToUsageRatio($scope.memUsage, $scope.memLimit, $http, function() {
+        memLimit = $scope.memLimitFallback;
+        $rootScope.addAlert("memory limit");
       }, function() {
-        testLimitToUsageRatio($scope.cpuUsage, $scope.cpuLimit, $http, $q, function() {
-          if (!!$scope.cpuLimitFallback) {
-            cpuLimit = $scope.cpuLimitFallback;
-            $rootScope.addAlert("cpu limit");
-          }
+        testLimitToUsageRatio($scope.cpuUsage, $scope.cpuLimit, $http, function() {
+          cpuLimit = $scope.cpuLimitFallback;
+          $rootScope.addAlert("cpu limit");
         }, function() {
-          $scope.poll = function() {
-            pollUtilization($scope.memUsage, memLimit, $scope, 0, $http, $q);
-            pollUtilization($scope.cpuUsage, cpuLimit, $scope, 1, $http, $q);
-          };
+          define_poll();
           $controller('ChartViewController', {$scope: $scope});
         });
       });
+
     });
 
-function testLimitToUsageRatio(usageLink, limitLink, $http, $q, change_callback, next_callback) {
+function testLimitToUsageRatio(usageLink, limitLink, $http, change_callback, next_callback) {
   var stamp = (new Date(0)).toISOString();
   var usage = 0
-  var limit = 0
-  $http.get(usageLink + stamp)
-  .success(function(data) {
-    if ((data.metrics == undefined) || (data.metrics.length < 2)) {
-      // No metrics are available, postpone
-      return;
-    }
+      var limit = 0
+      $http.get(usageLink + stamp)
+      .success(function(data) {
+        if ((data.metrics == undefined) || (data.metrics.length < 1)) {
+          // No metrics are available, postpone
+          setTimeout(function() {
+            testLimitToUsageRatio(usageLink, limitLink, $http, change_callback, next_callback);
+          }, 5000);
+          return;
+        }
 
-    usage = data.metrics[data.metrics.length - 1].value;
-    $http.get(limitLink + stamp)
-    .success(function(data) {
-      if ((data.metrics == undefined) || (data.metrics.length < 2)) {
-        // No metrics are available, postpone
-        return;
-      }
-      limit = data.metrics[data.metrics.length - 1].value;
+        usage = data.metrics[data.metrics.length - 1].value;
 
-      if (usage < limit/200) {
-        change_callback();
-      }
-      next_callback();
-    });
-  });
+        $http.get(limitLink + stamp)
+            .success(function(data) {
+              if ((data.metrics == undefined) || (data.metrics.length < 1)) {
+                // No metrics are available, postpone
+                setTimeout(function() {
+                  testLimitToUsageRatio(usageLink, limitLink, $http, change_callback, next_callback);
+                }, 5000);       
+                return;
+              }
+
+              limit = data.metrics[data.metrics.length - 1].value;
+
+              if (usage < limit/200) {
+                change_callback();
+              }
+              next_callback();
+            });
+      });
 }
 
 function pollUtilization(usageLink, limitLink, $scope, idx,  $http, $q){
