@@ -19,6 +19,7 @@ angular.module('kubedash').controller('clusterUtil', function($scope, $controlle
   $scope.memLimit = 'api/v1/model/metrics/memory-limit?start=';
   $scope.cpuUsage = 'api/v1/model/metrics/cpu-usage?start=';
   $scope.cpuLimit = 'api/v1/model/metrics/cpu-limit?start=';
+  $scope.stats = 'api/v1/model/stats';
   $controller('UtilizationViewController', {$scope: $scope});
 });
 
@@ -28,6 +29,7 @@ angular.module('kubedash').controller('nodeUtil', function($scope, $controller, 
   $scope.memLimit = 'api/v1/model/nodes/' + $scope.hostname + '/metrics/memory-limit?start=';
   $scope.cpuUsage = 'api/v1/model/nodes/' + $scope.hostname + '/metrics/cpu-usage?start=';
   $scope.cpuLimit = 'api/v1/model/nodes/' + $scope.hostname + '/metrics/cpu-limit?start=';
+  $scope.stats = 'api/v1/model/nodes/' + $scope.hostname + '/stats';
   $controller('UtilizationViewController', {$scope: $scope});
 });
 angular.module('kubedash').controller('namespaceUtil',  function($scope, $controller, $routeParams) {
@@ -38,7 +40,7 @@ angular.module('kubedash').controller('namespaceUtil',  function($scope, $contro
   $scope.cpuUsage = 'api/v1/model/namespaces/' + $scope.ns + '/metrics/cpu-usage?start=';
   $scope.cpuLimit = 'api/v1/model/namespaces/' + $scope.ns + '/metrics/cpu-limit?start=';
   $scope.cpuLimitFallback = 'api/v1/model/metrics/cpu-limit?start=';
-
+  $scope.stats = 'api/v1/model/namespaces/' + $scope.ns + '/stats';
   $controller('UtilizationViewController', {$scope: $scope});
 });
 

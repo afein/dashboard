@@ -96,6 +96,7 @@ angular.module('kubedash').controller('UtilizationViewController',
         $scope.poll = function() {
           pollUtilization($scope.memUsage, memLimit, $scope, 0, $http, $q);
           pollUtilization($scope.cpuUsage, cpuLimit, $scope, 1, $http, $q);
+          pollStats($scope.stats, $scope, $http);
         };
       }
 
@@ -155,6 +156,25 @@ function testLimitToUsageRatio(usageLink, limitLink, $http, change_callback, nex
               next_callback();
             });
       });
+}
+
+function pollStats(statsLink, $scope, $http){
+  if (!$scope.run) return;
+  $http.get(statsLink).success(function(data) {
+    console.log("got stats");
+    $scope.cpu = data["cpu-usage"];
+    $scope.mem = data["memory-usage"];
+    $scope.mem.Minute.Average = Math.round($scope.mem.Minute.Average / 1048576)
+    $scope.mem.Minute.Ninetieth = Math.round($scope.mem.Minute.Ninetieth / 1048576)
+    $scope.mem.Minute.Max = Math.round($scope.mem.Minute.Max / 1048576)
+    $scope.mem.Hour.Average = Math.round($scope.mem.Hour.Average / 1048576)
+    $scope.mem.Hour.Ninetieth = Math.round($scope.mem.Hour.Ninetieth / 1048576)
+    $scope.mem.Hour.Max = Math.round($scope.mem.Hour.Max / 1048576)
+    $scope.mem.Day.Average = Math.round($scope.mem.Day.Average / 1048576)
+    $scope.mem.Day.Ninetieth = Math.round($scope.mem.Day.Ninetieth / 1048576)
+    $scope.mem.Day.Max = Math.round($scope.mem.Day.Max / 1048576)
+    console.log($scope.mem);
+  });
 }
 
 function pollUtilization(usageLink, limitLink, $scope, idx,  $http, $q){
