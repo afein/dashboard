@@ -19,22 +19,24 @@ var cleanAll = function() {
   $("#clusterbutton").removeClass("active");
   $("#nodesbutton").removeClass("active");
   $("#namespacesbutton").removeClass("active");
-}
+};
 
-$("#clusterbutton").click(function() {
-  cleanAll();
-  $("#clusterbutton").addClass("active");
-}
+$(document).ready(function() {
+  $("#clusterbutton").click(function() {
+    cleanAll();
+    $("#clusterbutton").addClass("active");
+  });
 
-$("#nodesbutton").click(function() {
-  cleanAll();
-  $("#nodesbutton").addClass("active");
-}
+  $("#nodesbutton").click(function() {
+    cleanAll();
+    $("#nodesbutton").addClass("active");
+  });
 
-$("#namespacesbutton").click(function() {
-  cleanAll();
-  $("#namespacesbutton").addClass("active");
-}
+  $("#namespacesbutton").click(function() {
+    cleanAll();
+    $("#namespacesbutton").addClass("active");
+  });
+});
 
 // Generic Controllers
 
