@@ -13,11 +13,17 @@
 // limitations under the License.
 
 
-angular.module('kubedash').config(['$locationProvider', '$routeProvider', 
-        function($locationProvider, $routeProvider) {
-  $locationProvider.html5Mode(true);
-  $routeProvider
-      // route for the Cluster page
+angular.module('kubedash').config(['$locationProvider', '$routeProvider', '$provide',
+    function($locationProvider, $routeProvider, $provide) {
+
+      $provide.decorator('$sniffer', function($delegate) {
+        $delegate.history = false;
+        return $delegate;
+      });
+      $locationProvider.html5Mode(true).hashPrefix('!');
+
+      $routeProvider
+          // route for the Cluster page
       .when('/', {
         templateUrl : 'pages/cluster.html',
         controller : 'clusterUtil',
@@ -45,7 +51,7 @@ angular.module('kubedash').config(['$locationProvider', '$routeProvider',
       .otherwise({
         redirectTo: '/'
       });
-}]);
+    }]);
 
 
 angular.module('kubedash').run(function($rootScope) {

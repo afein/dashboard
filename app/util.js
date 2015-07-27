@@ -14,6 +14,30 @@
 
 'use strict';
 
+// Navigation bar underlining
+var cleanAll = function() {
+  $("#clusterbutton").removeClass("active");
+  $("#nodesbutton").removeClass("active");
+  $("#namespacesbutton").removeClass("active");
+}
+
+$("#clusterbutton").click(function() {
+  cleanAll();
+  $("#clusterbutton").addClass("active");
+}
+
+$("#nodesbutton").click(function() {
+  cleanAll();
+  $("#nodesbutton").addClass("active");
+}
+
+$("#namespacesbutton").click(function() {
+  cleanAll();
+  $("#namespacesbutton").addClass("active");
+}
+
+// Generic Controllers
+
 angular.module('kubedash').controller('ChartViewController', 
     function($scope, $interval) {
       $scope.options = {
